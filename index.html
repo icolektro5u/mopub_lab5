@@ -19,22 +19,6 @@
 		<script type="text/javascript" src="demo/js/jquery.min.js"></script>
 		<script type="text/javascript" src="lib/jquery.raty.min.js"></script>
 		
-		<script type="text/javascript">
-			$(function() {
-				$.fn.raty.defaults.path = 'lib/img';
-			  
-				$('.demo div').raty({
-					half: true,
-					score: function() {
-						return $(this).attr('data-number');
-					},
-					click: function(){
-						alert('hej');
-					}
-				});
-			});
-		</script>
-		
 		<script type="text/javascript" charset="utf-8" src="js/wormhole.js"></script>
 		<!--  include all the required CBHelper libraries: XMLHttpRequest, md5, json and the MoSync specific helper -->
 		<script type="text/javascript" charset="utf-8" src="js/CBHelper/md5.js"></script>
@@ -43,6 +27,95 @@
 		<script type="text/javascript" charset="utf-8" src="js/CBHelper/CBHelper.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/CBHelper/platforms/MoSyncHelper.js"></script>
 		
+		
+		<!-- <script type="text/javascript">
+		var helper;
+		
+		document.addEventListener(
+			"DOMContentLoaded",
+			function() {
+		
+				// initialize a new MoSyncHelper object
+				var moSyncHelper = new MoSyncHelper();
+				
+				// First initialise the helper object with the code, secret code 
+				// and the generic helper
+				
+				helper = new CBHelper("lab5_mopub14", "243cf93c71c270f90d7290e338d1e72e", moSyncHelper);
+				// use the md5 library provided to set the password
+				helper.setPassword(hex_md5("lo8604924%."));
+				
+				mosync.rlog("initialized");
+			},
+			true
+		);
+		
+		function addRating() {
+		
+			mosync.rlog("Adding rating");
+			
+			if ( helper ) {
+				// create an object to be inserted in our CloudBase instance,
+				// e.g a firstName, lastName and title into a collection called ‘users’
+				var dataObject = {
+					"restaurant" : "Test Food",
+					"score" : "6"
+				};
+				 // use the insertDocument method to send the call and insert the data
+				// in the users collection then print out the response using the
+				// outputString property of the CBHelperResponseInfo object
+
+				helper.insertDocument("ratings", dataObject, null, function(resp) {
+					hyper.log(resp.outputString);
+				});
+				
+			} else {
+				mosync.rlog("helper class not initialized");
+			}
+		}
+		
+		
+			$(function() {
+				$.fn.raty.defaults.path = 'lib/img';
+			  
+				$('.demo div').raty({
+					half: true,
+					score: function() {
+						return $(this).attr('data-number');
+					},
+					click: addRating()
+				});
+			});
+		</script> -->
+	
+		<script>
+			// First initialise the helper object with the code, secret code 
+// and the generic helper
+var helper = new CBHelper("lab5_mopub14", "243cf93c71c270f90d7290e338d1e72e", new GenericHelper());
+// use the md5 library provided to set the password
+helper.setPassword(hex_md5("lo8604924%."));
+
+// create an object to be inserted in our CloudBase instance,
+// e.g a firstName, lastName and title into a collection called ‘users’
+var dataObject = {
+    "firstName" : "Niklas",
+    "lastName" : "Nummelin",
+    "title" : "Wizard"
+};
+ // use the insertDocument method to send the call and insert the data
+// in the users collection then print out the response using the
+// outputString property of the CBHelperResponseInfo object
+
+helper.insertDocument("users", dataObject, null, function(resp) {
+    hyper.log(resp.outputString);
+});
+
+		
+		</script>
+		
+		
+		
+		
 	</head>
 	
 	<body>
@@ -50,13 +123,13 @@
 		
 		
         <div data-role="header">
-            <h1>Image Gallery</h1>
+            <h1>RestauRate</h1>
         </div><!-- /header -->
  
         <div id="div1" data-role="content">
         
 			<div data-role="collapsible" data-collapsed="false" data-inset="false">
-			   <h3>Hankuka Food</h3>
+			   <h3>Hankuk Food</h3>
 			   <img width="100%" src="http://tong.visitkorea.or.kr/enu/CU/rc/940268_1_6.jpg"/>
 			   
 				<div class="demo">
