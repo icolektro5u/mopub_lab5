@@ -19,11 +19,16 @@
 		<script type="text/javascript" src="demo/js/jquery.min.js"></script>
 		<script type="text/javascript" src="lib/jquery.raty.min.js"></script>
 		
-		  <script type="text/javascript">
-    $(function() {
-	  $.fn.raty.defaults.path = 'lib/img';
-		 $('#score-demo').raty({ score: 3 });
-		});
+		<script type="text/javascript">
+			$(function() {
+				$.fn.raty.defaults.path = 'lib/img';
+			  
+				$('.demo div').raty({
+					score: function() {
+						return $(this).attr('data-number');
+					}
+				});
+			});
 		</script>
 	</head>
 	
@@ -41,31 +46,38 @@
 			   <h3>Hankuka Food</h3>
 			   <img width="100%" src="http://tong.visitkorea.or.kr/enu/CU/rc/940268_1_6.jpg"/>
 			   
-			    <div class="demo">
-            <div id="score-demo"></div>
-          </div>
+				<div class="demo">
+					<div id="number-callback-demo1" data-number="3"></div>
+				</div>
 			   
 			  <p>Description text</p>
 			   <p>Location text</p>
-			   <p>Description text</p>
 			   <p>Price text</p>
 			</div>
 		
 			<div data-role="collapsible" data-collapsed="false" data-inset="false">
 			   <h3>Nihon Diner</h3>
 			   <img width="100%" src="http://www.maff.go.jp/e/export/campaign/img/cuisine.jpg"/>
+			   
+			   <div class="demo">
+					<div id="number-callback-demo2" data-number="1"></div>
+				</div>
+				
 			   <p>Description text</p>
 			   <p>Location text</p>
-			   <p>Description text</p>
 			   <p>Price text</p>
 			</div>
 		
 			<div data-role="collapsible" data-collapsed="false" data-inset="false">
 			   <h3>Zhongguo Restaurant</h3>
 			   <img width="100%" src="http://jacquelinewhitmore.com/wp-content/uploads/2012/08/chinese-banquet-dinner.jpg"/>
+			   
+			   <div class="demo">
+					<div id="number-callback-demo3" data-number="2"></div>
+				</div>
+				
 			   <p>Description text</p>
 			   <p>Location text</p>
-			   <p>Description text</p>
 			   <p>Price text</p>
 			</div>
 			
