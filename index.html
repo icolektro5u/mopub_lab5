@@ -20,10 +20,10 @@
 		<script type="text/javascript" src="lib/jquery.raty.min.js"></script>
 		
 		<script type="text/javascript">
-			//$(function() {
+			$(function() {
 				$.fn.raty.defaults.path = 'lib/img';
 			  
-				$('#rating').raty({
+				$('.demo div').raty({
 					half: true,
 					score: function() {
 						return $(this).attr('data-number');
@@ -32,8 +32,17 @@
 						alert('hej');
 					}
 				});
-			//});
+			});
 		</script>
+		
+		<script type="text/javascript" charset="utf-8" src="js/wormhole.js"></script>
+		<!--  include all the required CBHelper libraries: XMLHttpRequest, md5, json and the MoSync specific helper -->
+		<script type="text/javascript" charset="utf-8" src="js/CBHelper/md5.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/CBHelper/json.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/CBHelper/CBXMLHttpRequest.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/CBHelper/CBHelper.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/CBHelper/platforms/MoSyncHelper.js"></script>
+		
 	</head>
 	
 	<body>
@@ -51,7 +60,7 @@
 			   <img width="100%" src="http://tong.visitkorea.or.kr/enu/CU/rc/940268_1_6.jpg"/>
 			   
 				<div class="demo">
-					<div id="rating" data-number="3"></div>
+					<div id="number-callback-demo1" data-number="3"></div>
 				</div>
 			   
 			  <p>Description text</p>
