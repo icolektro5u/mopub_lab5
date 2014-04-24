@@ -28,13 +28,14 @@
 		<script type="text/javascript" charset="utf-8" src="js/CBHelper/platforms/MoSyncHelper.js"></script>
 		
 		
-		<!-- <script type="text/javascript">
+		<script type="text/javascript">
 		var helper;
+		var searchCondition;
 		
 		document.addEventListener(
 			"DOMContentLoaded",
 			function() {
-		
+				
 				// initialize a new MoSyncHelper object
 				var moSyncHelper = new MoSyncHelper();
 				
@@ -46,28 +47,46 @@
 				helper.setPassword(hex_md5("lo8604924%."));
 				
 				mosync.rlog("initialized");
+				
+				
+				/*searchCondition = { "restaurant" : "Hankuk Food" };
+				// call the searchDocuments function
+				helper.searchDocuments(searchCondition,"ratings", function(resp) {
+					// uncomment next row to get entire string
+					alert(resp.outputString);   
+			   
+					if (resp.callStatus){       // if successful
+						for (index in resp.outputData){
+							var user = resp.outputData[index];
+							alert (user.restaurant + ' ' + user.rating);
+						}
+					}
+				}*/
+				
+				
+				
 			},
 			true
-		);
-		
-		function addRating() {
-		
-			mosync.rlog("Adding rating");
 			
+		);
+
+			
+		
+		function addRating(score, name) {
+			
+			mosync.rlog("Adding rating");
 			if ( helper ) {
 				// create an object to be inserted in our CloudBase instance,
 				// e.g a firstName, lastName and title into a collection called ‘users’
 				var dataObject = {
-					"restaurant" : "Test Food",
-					"score" : "6"
+					"restaurant" : name,
+					"score" : score
 				};
 				 // use the insertDocument method to send the call and insert the data
 				// in the users collection then print out the response using the
 				// outputString property of the CBHelperResponseInfo object
 
-				helper.insertDocument("ratings", dataObject, null, function(resp) {
-					hyper.log(resp.outputString);
-				});
+				helper.insertDocument("ratings", dataObject, null);
 				
 			} else {
 				mosync.rlog("helper class not initialized");
@@ -77,45 +96,20 @@
 		
 			$(function() {
 				$.fn.raty.defaults.path = 'lib/img';
-			  
-				$('.demo div').raty({
-					half: true,
-					score: function() {
-						return $(this).attr('data-number');
-					},
-					click: addRating()
-				});
+				
+				
+					$('.demo div').raty({
+						half: true,
+						score: function() {
+							return $(this).attr('data-number');
+						},
+						click: function(score){
+							var name = $(this).attr('restName');
+							addRating(score, name)}
+					});
 			});
-		</script> -->
-	
-		<script>
-			// First initialise the helper object with the code, secret code 
-// and the generic helper
-var helper = new CBHelper("lab5_mopub14", "243cf93c71c270f90d7290e338d1e72e", new GenericHelper());
-// use the md5 library provided to set the password
-helper.setPassword(hex_md5("lo8604924%."));
-
-// create an object to be inserted in our CloudBase instance,
-// e.g a firstName, lastName and title into a collection called ‘users’
-var dataObject = {
-    "firstName" : "Niklas",
-    "lastName" : "Nummelin",
-    "title" : "Wizard"
-};
- // use the insertDocument method to send the call and insert the data
-// in the users collection then print out the response using the
-// outputString property of the CBHelperResponseInfo object
-
-helper.insertDocument("users", dataObject, null, function(resp) {
-    hyper.log(resp.outputString);
-});
-
-		
 		</script>
-		
-		
-		
-		
+
 	</head>
 	
 	<body>
@@ -133,7 +127,7 @@ helper.insertDocument("users", dataObject, null, function(resp) {
 			   <img width="100%" src="http://tong.visitkorea.or.kr/enu/CU/rc/940268_1_6.jpg"/>
 			   
 				<div class="demo">
-					<div id="number-callback-demo1" data-number="3"></div>
+					<div id="number-callback-demo1" restName='Hankuk Food' data-number="3"></div>
 				</div>
 			   
 			  <p>Description text</p>
@@ -146,7 +140,7 @@ helper.insertDocument("users", dataObject, null, function(resp) {
 			   <img width="100%" src="http://www.maff.go.jp/e/export/campaign/img/cuisine.jpg"/>
 			   
 			   <div class="demo">
-					<div id="number-callback-demo2" data-number="1"></div>
+					<div id="number-callback-demo2" restName='Nihon Diner' data-number="1"></div>
 				</div>
 				
 			   <p>Description text</p>
@@ -159,7 +153,7 @@ helper.insertDocument("users", dataObject, null, function(resp) {
 			   <img width="100%" src="http://jacquelinewhitmore.com/wp-content/uploads/2012/08/chinese-banquet-dinner.jpg"/>
 			   
 			   <div class="demo">
-					<div id="number-callback-demo3" data-number="2"></div>
+					<div id="number-callback-demo3" restName='Zhongguo Restaurant' data-number="2"></div>
 				</div>
 				
 			   <p>Description text</p>
