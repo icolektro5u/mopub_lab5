@@ -25,44 +25,61 @@
 		<script type="text/javascript" charset="utf-8" src="js/CBHelper/json.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/CBHelper/CBXMLHttpRequest.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/CBHelper/CBHelper.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/CBHelper/platforms/MoSyncHelper.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/CBHelper/platforms/GenericHelper.js"></script>
 		
 		
 		<script type="text/javascript">
 		var helper;
-		var searchCondition;
+		var rating1;
+		var rating2;
+		var rating3;
 		
 		document.addEventListener(
 			"DOMContentLoaded",
 			function() {
 				
 				// initialize a new MoSyncHelper object
-				var moSyncHelper = new MoSyncHelper();
+				//var moSyncHelper = new MoSyncHelper();
 				
 				// First initialise the helper object with the code, secret code 
 				// and the generic helper
 				
-				helper = new CBHelper("lab5_mopub14", "243cf93c71c270f90d7290e338d1e72e", moSyncHelper);
+				helper = new CBHelper("lab5_mopub14", "243cf93c71c270f90d7290e338d1e72e", new GenericHelper());
 				// use the md5 library provided to set the password
 				helper.setPassword(hex_md5("lo8604924%."));
 				
 				mosync.rlog("initialized");
 				
+			
+				func();
+				initialRatings();
 				
-				/*searchCondition = { "restaurant" : "Hankuk Food" };
-				// call the searchDocuments function
-				helper.searchDocuments(searchCondition,"ratings", function(resp) {
-					// uncomment next row to get entire string
-					alert(resp.outputString);   
-			   
-					if (resp.callStatus){       // if successful
-						for (index in resp.outputData){
-							var user = resp.outputData[index];
-							alert (user.restaurant + ' ' + user.rating);
+				
+				
+				/*$.fn.raty.defaults.path = 'lib/img';
+				
+				
+				$('.demo div').raty({
+					half: true,
+					score: function() {
+						if($(this).attr('restName') == "Hankuk Food"){
+							alert("Outside function:" + ' ' + rating1);
+							return 1;
 						}
-					}
-				}*/
-				
+					
+						else if($(this).attr('restName') == "Nihon Diner"){
+							return 2;
+						}
+						
+						else if($(this).attr('restName') == "Zhongguo Restaurant"){
+							return 3;
+						}
+						//return $(this).attr('data-number');
+					},
+					click: function(score){
+						var name = $(this).attr('restName');
+						addRating(score, name)}
+				});*/
 				
 				
 			},
@@ -70,8 +87,26 @@
 			
 		);
 
-			
 		
+
+		function searchScores(resp) {
+			// uncomment next row to get entire string
+			//alert(resp.outputString);   
+			   
+			if (resp.callStatus){       // if successful
+				var sum = 0;
+				var count = 0;
+				for (index in resp.outputData){
+					var user = resp.outputData[index];
+					
+					sum = sum + user.score;
+					count = count + 1;
+				}
+				//alert (user.restaurant + ' ' + sum/count);
+			}
+			return sum/count;
+		}
+
 		function addRating(score, name) {
 			
 			mosync.rlog("Adding rating");
@@ -93,21 +128,62 @@
 			}
 		}
 		
+		function func(){
+			var searchCondition1 = { "restaurant" : "Hankuk Food" };
+			var searchCondition2 = { "restaurant" : "Nihon Diner" };
+			var searchCondition3 = { "restaurant" : "Zhongguo Restaurant" };
+	
+			// call the searchDocuments function
+			helper.searchDocuments(searchCondition1,"ratings", 
+				function(resp) {
+					//alert(resp.outputString); 
+					rating1 = searchScores(resp);
+					alert("Inside funtion:" + ' ' + rating1);
+				}
+			);
+			
+			helper.searchDocuments(searchCondition2,"ratings", 
+				function(resp) {
+					rating2 = searchScores(resp);
+				}
+			);
+			
+			helper.searchDocuments(searchCondition3,"ratings", 
+				function(resp) {
+					rating3 = searchScores(resp);
+			
+				}
+				
+			);
+			
+		};
 		
-			$(function() {
-				$.fn.raty.defaults.path = 'lib/img';
-				
-				
-					$('.demo div').raty({
-						half: true,
-						score: function() {
-							return $(this).attr('data-number');
-						},
-						click: function(score){
-							var name = $(this).attr('restName');
-							addRating(score, name)}
-					});
-			});
+		function initialRatings() {
+			$.fn.raty.defaults.path = 'lib/img';
+			
+			
+				$('.demo div').raty({
+					half: true,
+					score: function() {
+						if($(this).attr('restName') == "Hankuk Food"){
+							alert("Outside function:" + ' ' + rating1);
+							return 1;
+						}
+					
+						else if($(this).attr('restName') == "Nihon Diner"){
+							return 2;
+						}
+						
+						else if($(this).attr('restName') == "Zhongguo Restaurant"){
+							return 3;
+						}
+						//return $(this).attr('data-number');
+					},
+					click: function(score){
+						var name = $(this).attr('restName');
+						addRating(score, name)}
+				});
+		};
 		</script>
 
 	</head>
