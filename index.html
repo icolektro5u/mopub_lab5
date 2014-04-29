@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<!--
-* @file index.html
-*
-* The main CloudSquare entry file. This will display the login box and/or log in the user automatically
--->
 <html>
 	<head>
 		<meta name="viewport" content="width=320, user-scalable=no">
@@ -19,7 +14,6 @@
 		<script type="text/javascript" src="demo/js/jquery.min.js"></script>
 		<script type="text/javascript" src="lib/jquery.raty.min.js"></script>
 		
-		<script type="text/javascript" charset="utf-8" src="js/wormhole.js"></script>
 		<!--  include all the required CBHelper libraries: XMLHttpRequest, md5, json and the MoSync specific helper -->
 		<script type="text/javascript" charset="utf-8" src="js/CBHelper/md5.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/CBHelper/json.js"></script>
@@ -38,56 +32,32 @@
 			"DOMContentLoaded",
 			function() {
 				
-				// initialize a new MoSyncHelper object
-				//var moSyncHelper = new MoSyncHelper();
-				
-				// First initialise the helper object with the code, secret code 
-				// and the generic helper
-				
 				helper = new CBHelper("lab5_mopub14", "243cf93c71c270f90d7290e338d1e72e", new GenericHelper());
-				// use the md5 library provided to set the password
 				helper.setPassword(hex_md5("lo8604924%."));
 				
-				mosync.rlog("initialized");
+				$( ".submitButton" ).bind( "click", function(event, ui) {
+						alert("Comment sent");
 				
-			
-				func();
-				initialRatings();
-				
-				
-				
-				/*$.fn.raty.defaults.path = 'lib/img';
-				
-				
-				$('.demo div').raty({
-					half: true,
-					score: function() {
-						if($(this).attr('restName') == "Hankuk Food"){
-							alert("Outside function:" + ' ' + rating1);
-							return 1;
-						}
+					var textAreaValue = $('#text' + this.id).val();
 					
-						else if($(this).attr('restName') == "Nihon Diner"){
-							return 2;
-						}
-						
-						else if($(this).attr('restName') == "Zhongguo Restaurant"){
-							return 3;
-						}
-						//return $(this).attr('data-number');
-					},
-					click: function(score){
-						var name = $(this).attr('restName');
-						addRating(score, name)}
-				});*/
+					if ( helper ) {
+						var dataObject = {
+							"restaurant" : $(this).attr('restName'),
+							"comment" : textAreaValue
+						};
+
+						helper.insertDocument("comments", dataObject, null);
 				
-				
+					}		 
+				});
+			
+				setAllInitialRatings();
+				getAllComments();
+					
 			},
 			true
 			
 		);
-
-		
 
 		function searchScores(resp) {
 			// uncomment next row to get entire string
@@ -109,26 +79,61 @@
 
 		function addRating(score, name) {
 			
-			mosync.rlog("Adding rating");
 			if ( helper ) {
-				// create an object to be inserted in our CloudBase instance,
-				// e.g a firstName, lastName and title into a collection called ‘users’
 				var dataObject = {
 					"restaurant" : name,
 					"score" : score
 				};
-				 // use the insertDocument method to send the call and insert the data
-				// in the users collection then print out the response using the
-				// outputString property of the CBHelperResponseInfo object
 
 				helper.insertDocument("ratings", dataObject, null);
 				
-			} else {
-				mosync.rlog("helper class not initialized");
-			}
+			} 
 		}
 		
-		function func(){
+		function getAllComments(){
+			var searchCondition1 = { "restaurant" : "Hankuk Food" };
+			var searchCondition2 = { "restaurant" : "Nihon Diner" };
+			var searchCondition3 = { "restaurant" : "Zhongguo Restaurant" };
+			
+			helper.searchDocuments(searchCondition1,"comments", 
+				function(resp) {
+					var comments1='<br/>';
+					for (index in resp.outputData){
+						var rest1 = resp.outputData[index];
+						comments1 = comments1+ rest1.comment+'<br/><br/>';
+					
+						
+					}
+					document.getElementById('commentArea1').innerHTML=comments1;
+					
+				}
+			);
+			
+			helper.searchDocuments(searchCondition2,"comments", 
+				function(resp) {
+				var comments2='<br/>';
+					for (index in resp.outputData){
+						var rest2 = resp.outputData[index];
+						comments2 = comments2 +rest2.comment+'<br/><br/>';
+					}
+					document.getElementById('commentArea2').innerHTML=comments2;
+				}
+			);
+			
+			helper.searchDocuments(searchCondition3,"comments", 
+				function(resp) {
+				var comments3='<br/>';
+					for (index in resp.outputData){
+						var rest3 = resp.outputData[index];
+						comments3 = comments3+rest3.comment+'<br/><br/>';
+					}
+					document.getElementById('commentArea3').innerHTML=comments3;
+				}
+			);
+		}
+		
+		
+		function setAllInitialRatings(){
 			var searchCondition1 = { "restaurant" : "Hankuk Food" };
 			var searchCondition2 = { "restaurant" : "Nihon Diner" };
 			var searchCondition3 = { "restaurant" : "Zhongguo Restaurant" };
@@ -136,52 +141,43 @@
 			// call the searchDocuments function
 			helper.searchDocuments(searchCondition1,"ratings", 
 				function(resp) {
-					//alert(resp.outputString); 
-					rating1 = searchScores(resp);
-					alert("Inside funtion:" + ' ' + rating1);
+					score1 = searchScores(resp);
+					setInitialRating('#ratingBar1', score1);
 				}
 			);
 			
 			helper.searchDocuments(searchCondition2,"ratings", 
 				function(resp) {
-					rating2 = searchScores(resp);
+					score2 = searchScores(resp);
+					setInitialRating('#ratingBar2', score2);
 				}
 			);
 			
 			helper.searchDocuments(searchCondition3,"ratings", 
 				function(resp) {
-					rating3 = searchScores(resp);
-			
+					score3 = searchScores(resp);
+					setInitialRating('#ratingBar3', score3);
 				}
 				
 			);
 			
 		};
 		
-		function initialRatings() {
+	
+		
+		function setInitialRating(searchString, score) {
 			$.fn.raty.defaults.path = 'lib/img';
 			
 			
-				$('.demo div').raty({
+				$(searchString).raty({
 					half: true,
-					score: function() {
-						if($(this).attr('restName') == "Hankuk Food"){
-							alert("Outside function:" + ' ' + rating1);
-							return 1;
-						}
-					
-						else if($(this).attr('restName') == "Nihon Diner"){
-							return 2;
-						}
-						
-						else if($(this).attr('restName') == "Zhongguo Restaurant"){
-							return 3;
-						}
-						//return $(this).attr('data-number');
-					},
+					score: score, 
 					click: function(score){
 						var name = $(this).attr('restName');
-						addRating(score, name)}
+						addRating(score, name);
+						$('#' + this.id).after("Rating added");
+						}
+						
 				});
 		};
 		</script>
@@ -198,43 +194,57 @@
  
         <div id="div1" data-role="content">
         
-			<div data-role="collapsible" data-collapsed="false" data-inset="false">
-			   <h3>Hankuk Food</h3>
-			   <img width="100%" src="http://tong.visitkorea.or.kr/enu/CU/rc/940268_1_6.jpg"/>
+			<div data-role="collapsible" data-inset="false">
+				<h3>Hankuk Food</h3>
+				<img width="100%" src="http://tong.visitkorea.or.kr/enu/CU/rc/940268_1_6.jpg"/>
 			   
 				<div class="demo">
-					<div id="number-callback-demo1" restName='Hankuk Food' data-number="3"></div>
+					<div id="ratingBar1" restName='Hankuk Food' ></div>
 				</div>
 			   
-			  <p>Description text</p>
-			   <p>Location text</p>
-			   <p>Price text</p>
+			  <p>The chefs (around 17 on any particular day) really care about the royal cuisine they prepare. A dozen courses make up the royal banquet, and portions are dainty and artistic rather than large. The fresh flavours are subtle and quite different from the strong flavours usually associated with Korean food. The hanok, the hanbok -clad waitresses, the gayageum (zither) music and the platters and boxes the food is served in are all part of the experience.</p>
+			   <p>Chungmuro</p>
+			   <p>$$$</p>
+			   <label for="textArea1"><strong>Comments:</strong></label>
+			   <div id="commentArea1"><p></p></div>
+				<textarea name="textarea" id="textForm1"></textarea>
+				<input type="submit" class="submitButton" id="Form1" value="Submit" restName='Hankuk Food' />
 			</div>
 		
-			<div data-role="collapsible" data-collapsed="false" data-inset="false">
+			<div data-role="collapsible" data-inset="false">
 			   <h3>Nihon Diner</h3>
 			   <img width="100%" src="http://www.maff.go.jp/e/export/campaign/img/cuisine.jpg"/>
 			   
 			   <div class="demo">
-					<div id="number-callback-demo2" restName='Nihon Diner' data-number="1"></div>
+					<div id="ratingBar2" restName='Nihon Diner' id="button2" ></div>
 				</div>
 				
-			   <p>Description text</p>
-			   <p>Location text</p>
-			   <p>Price text</p>
+			   <p>Japanese Cuisine. Great selections of Sushi, rolls, beer, and Sake.</p>
+			   <p>112 W Main Street <br/>Charlottesville 22902</p>
+			   <p>$$</p>
+			    <label for="textArea2"><strong>Comments:</strong></label>
+				<div id="commentArea2">
+			   </div>
+					<textarea name="textarea" id="textForm2"></textarea>
+					<input type="submit" class="submitButton" id="Form2" value="Submit" restName='Nihon Diner'/>
+					
 			</div>
 		
-			<div data-role="collapsible" data-collapsed="false" data-inset="false">
+			<div data-role="collapsible" data-inset="false">
 			   <h3>Zhongguo Restaurant</h3>
 			   <img width="100%" src="http://jacquelinewhitmore.com/wp-content/uploads/2012/08/chinese-banquet-dinner.jpg"/>
 			   
 			   <div class="demo">
-					<div id="number-callback-demo3" restName='Zhongguo Restaurant' data-number="2"></div>
+					<div id="ratingBar3" restName='Zhongguo Restaurant'></div>
 				</div>
-				
-			   <p>Description text</p>
-			   <p>Location text</p>
-			   <p>Price text</p>
+			   <p>Zhongguo Restaurant’s central theme is “home” style service, where customers can enjoy a variety of authentic regional dishes. Offering more than 70 selections of authentic Northern Chinese cuisine, the menus feature a strong emphasis on seafood, utilizing the freshest ingredients that China has to offer.</p>
+			   <p>784 Blossom Hill Rd <br/>Los Gatos, CA 95032</p>
+			   <p>$$$$</p>
+			    <label for="textarea-a"><strong>Comments:</strong></label>
+				<div id="commentArea3">
+			   </div>
+				<textarea name="textarea" id="textForm3"></textarea>
+				<input type="submit" class="submitButton" id="Form3" value="Submit" restNAme='Zhongguo Restaurant'/>
 			</div>
 			
 
